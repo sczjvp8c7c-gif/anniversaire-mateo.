@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyeux anniversaire !</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(135deg,#ff5fa2,#ffd166,#7bdff2);
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      text-align:center;
+    }
+    .container{
+      background:rgba(255,255,255,0.92);
+      padding:40px;
+      border-radius:24px;
+      box-shadow:0 15px 40px rgba(0,0,0,.2);
+      width:min(90vw,700px);
+    }
+    h1{
+      font-size:3.2rem;
+      margin:0 0 10px;
+      color:#ff2d55;
+    }
+    p{
+      font-size:1.2rem;
+      color:#444;
+    }
+    button{
+      margin-top:30px;
+      font-size:1.5rem;
+      padding:16px 34px;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      background:#ff2d55;
+      color:white;
+      transition:.2s;
+      font-weight:bold;
+    }
+    button:hover{ transform:scale(1.05); }
+    #giftScreen{ display:none; position:relative; height:65vh; }
+    #giftTitle{
+      font-size:2.4rem;
+      color:#d90429;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+    #gift{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      font-size:110px;
+      cursor:pointer;
+      user-select:none;
+      transition:left .25s, top .25s, transform .2s;
+    }
+    #gift:hover{
+      transform:translate(-50%,-50%) scale(1.08);
+    }
+    #result{
+      display:none;
+      margin-top:25px;
+      font-size:2rem;
+      color:#111;
+      font-weight:800;
+    }
+    .small{
+      color:#666;
+      font-size:1rem;
+      margin-top:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="startScreen">
+    <h1>🎉 Joyeux anniversaire ! 🎉</h1>
+    <p>Aujourd’hui est un grand jour… prépare-toi pour une surprise incroyable 😏</p>
+    <button id="discoverBtn">DÉCOUVRIR</button>
+  </div>
+
+  <div class="container" id="giftScreen">
+    <div id="giftTitle">🎁 Clique sur ton cadeau Mateo 🎁</div>
+    <div id="gift">🎁</div>
+    <div id="result">😂 Bien tenté mais t’as rien gagné 😂</div>
+    <div class="small" id="counter"></div>
+  </div>
+
+  <script>
+    // Confettis au chargement
+    function fireConfetti() {
+      const duration = 2500;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({
+          particleCount: 7,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 7,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1 }
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+    fireConfetti();
+
+    const startScreen = document.getElementById("startScreen");
+    const giftScreen = document.getElementById("giftScreen");
+    const gift = document.getElementById("gift");
+    const result = document.getElementById("result");
+    const counter = document.getElementById("counter");
+
+    document.getElementById("discoverBtn").addEventListener("click", () => {
+      startScreen.style.display = "none";
+      giftScreen.style.display = "block";
+      fireConfetti();
+      counter.textContent = "Essaie d’ouvrir ton cadeau…";
+    });
+
+    let clicks = 0;
+
+    gift.addEventListener("click", () => {
+      clicks++;
+
+      if (clicks < 5) {
+        // Déplace le cadeau aléatoirement
+        const x = 15 + Math.random() * 70;
+        const y = 18 + Math.random() * 60;
+        gift.style.left = x + "%";
+        gift.style.top = y + "%";
+        counter.textContent = "Ouverture du cadeau... " + clicks + "/5";
+      } else {
+        // Ouvre le cadeau
+        gift.textContent = "📦";
+        gift.style.left = "50%";
+        gift.style.top = "42%";
+        result.style.display = "block";
+        counter.textContent = "Mission accomplie !";
+        confetti({
+          particleCount: 250,
+          spread: 120,
+          origin: { y: 0.6 }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
